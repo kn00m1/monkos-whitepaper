@@ -1,0 +1,12 @@
+{
+  "name": "monkos-whitepaper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monk OS Whitepaper — Event-First Computing for Attention Sovereignty",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "marked": "^15.0.0"
+  }
+}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monk OS: Event-First Computing for Attention Sovereignty and Commitment Integrity</title>
+  <meta name="description" content="A whitepaper on human-centered mobile operating system design. Monk OS is a minimal Android ROM that treats humans and their commitments as the persistent layer, and apps as the transient one.">
+  <meta property="og:title" content="Monk OS Whitepaper">
+  <meta property="og:description" content="Event-First Computing for Attention Sovereignty and Commitment Integrity">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://monkos.failsafesolutions.org">
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --text-secondary: #4a4a4a;
+      --bg: #fafaf8;
+      --surface: #ffffff;
+      --border: #e0ddd8;
+      --accent: #2c4a2c;
+      --accent-light: #f0f4f0;
+      --link: #1a5276;
+      --code-bg: #f5f3ef;
+      --blockquote-border: #8faa8f;
+      --table-header: #2c4a2c;
+      --table-header-text: #ffffff;
+      --table-stripe: #f8f7f4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Charter', 'Bitstream Charter', 'Georgia', 'Cambria', serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.72;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* Title and subtitle */
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.25rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    h1 + p > strong {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    /* Section headings */
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-top: 3.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--accent);
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-top: 2.2rem;
+      margin-bottom: 0.7rem;
+      color: var(--text);
+    }
+
+    /* Paragraphs */
+    p {
+      margin-bottom: 1.15rem;
+    }
+
+    /* Strong emphasis in running text */
+    strong {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-bottom: 1.15rem;
+      padding-left: 1.6rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    li > strong:first-child {
+      color: var(--accent);
+    }
+
+    /* Links */
+    a {
+      color: var(--link);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    a:hover {
+      color: var(--accent);
+    }
+
+    /* Blockquotes — used for thesis invariants */
+    blockquote {
+      margin: 1.8rem 0;
+      padding: 1.2rem 1.5rem;
+      border-left: 4px solid var(--blockquote-border);
+      background: var(--accent-light);
+      border-radius: 0 6px 6px 0;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+
+    blockquote p {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Tables — architecture mapping */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.8rem 0;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    thead th {
+      background: var(--table-header);
+      color: var(--table-header-text);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    thead th:first-child {
+      border-radius: 6px 0 0 0;
+    }
+
+    thead th:last-child {
+      border-radius: 0 6px 0 0;
+    }
+
+    tbody td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--table-stripe);
+    }
+
+    tbody tr:last-child td:first-child {
+      border-radius: 0 0 0 6px;
+    }
+
+    tbody tr:last-child td:last-child {
+      border-radius: 0 0 6px 0;
+    }
+
+    /* Horizontal rules */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* Code (inline, for module names) */
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+    }
+
+    /* References section — tighter spacing */
+    h2:last-of-type ~ ol {
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .container { max-width: 100%; padding: 0; }
+      h2 { break-after: avoid; }
+      table { break-inside: avoid; }
+      blockquote { break-inside: avoid; }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .container { padding: 1.5rem 1rem 4rem; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.25rem; }
+      table { font-size: 0.82rem; }
+      thead th, tbody td { padding: 0.5rem 0.6rem; }
+    }
+
+    /* Subtle header decoration */
+    .container > h1:first-child::before {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 4px;
+      background: var(--accent);
+      margin-bottom: 1.5rem;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <article class="container">
+    {{CONTENT}}
+  </article>
+</body>
+</html>
