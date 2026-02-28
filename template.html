@@ -596,7 +596,10 @@
     /* ── Responsive ── */
     @media (max-width: 1024px) {
       .toc-sidebar {
-        display: none;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, visibility 0.2s;
         position: fixed;
         bottom: 5rem;
         right: 1.5rem;
@@ -609,7 +612,7 @@
         box-shadow: 0 8px 32px rgba(0,0,0,0.15);
         z-index: 999;
       }
-      .toc-sidebar.open { display: block; }
+      .toc-sidebar.open { visibility: visible; opacity: 1; pointer-events: auto; }
       .toc-mobile-toggle { display: flex; align-items: center; justify-content: center; }
       .page-wrapper { display: block; }
       .container { height: calc(100vh - var(--progress-height) - 0.5rem); }
@@ -968,6 +971,7 @@
     // ── Navigation State ──
     var currentPage = 0;
     var isTransitioning = false;
+    var tocClickNav = false;
 
     function navigateToPage(targetIndex, scrollToEl) {
       if (targetIndex < 0 || targetIndex >= totalPages) return;
@@ -977,6 +981,7 @@
       // If same page but different sub-heading, just scroll within
       if (targetIndex === currentPage && scrollToEl) {
         scrollToEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        tocClickNav = false;
         return;
       }
 
@@ -1004,8 +1009,12 @@
       newPage.style.transform = '';
       newPage.style.opacity = '';
 
-      // Scroll new page to top (or to target element)
-      newPage.scrollTop = 0;
+      // Pre-position scroll before transition (page is invisible at opacity:0)
+      if (scrollToEl) {
+        newPage.scrollTop = scrollToEl.offsetTop - 20;
+      } else {
+        newPage.scrollTop = 0;
+      }
 
       var prevPage = currentPage;
       currentPage = targetIndex;
@@ -1017,13 +1026,7 @@
       setTimeout(function() {
         oldPage.classList.remove('active', 'exit-up', 'exit-down');
         isTransitioning = false;
-
-        // If we need to scroll to a specific element within the new page
-        if (scrollToEl) {
-          setTimeout(function() {
-            scrollToEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 50);
-        }
+        tocClickNav = false;
 
         // Trigger diagram animations on the new page
         animateDiagramsForPage(targetIndex);
@@ -1037,6 +1040,7 @@
         var pageIdx = item.pageIndex;
         if (pageIdx === undefined) return;
 
+        tocClickNav = true;
         navigateToPage(pageIdx, item.el);
 
         // Close mobile TOC
@@ -1084,8 +1088,8 @@
         item.link.classList.toggle('active', i === activeIdx);
       });
 
-      // Scroll active TOC item into view
-      if (activeIdx >= 0) {
+      // Scroll active TOC item into view (skip when user clicked a TOC item)
+      if (activeIdx >= 0 && !tocClickNav) {
         var activeLink = tocItems[activeIdx].link;
         if (tocSidebar.scrollHeight > tocSidebar.clientHeight) {
           var linkTop = activeLink.offsetTop - tocSidebar.offsetTop;
