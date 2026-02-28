@@ -24,14 +24,19 @@
       --table-header: #2c4a2c;
       --table-header-text: #ffffff;
       --table-stripe: #f8f7f4;
+      --toc-width: 240px;
+      --progress-height: 3px;
+      --diagram-green: #3a7a3a;
+      --diagram-amber: #c5912b;
+      --diagram-blue: #2a5a8a;
+      --diagram-node: #e8e4de;
+      --diagram-active: #2c4a2c;
+      --diagram-glow: rgba(44, 74, 44, 0.3);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html {
-      font-size: 17px;
-      scroll-behavior: smooth;
-    }
+    html { font-size: 17px; scroll-behavior: smooth; }
 
     body {
       font-family: 'Charter', 'Bitstream Charter', 'Georgia', 'Cambria', serif;
@@ -41,13 +46,98 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 6rem;
+    /* ── Progress Bar ── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 0%;
+      height: var(--progress-height);
+      background: var(--accent);
+      z-index: 1000;
+      transition: width 0.15s linear;
     }
 
-    /* Title and subtitle */
+    /* ── Layout ── */
+    .page-wrapper {
+      display: flex;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding-top: calc(var(--progress-height) + 0.5rem);
+    }
+
+    /* ── TOC Sidebar ── */
+    .toc-sidebar {
+      position: sticky;
+      top: calc(var(--progress-height) + 1rem);
+      width: var(--toc-width);
+      min-width: var(--toc-width);
+      height: fit-content;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding: 1.5rem 0 1.5rem 1.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .toc-sidebar::-webkit-scrollbar { width: 4px; }
+    .toc-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .toc-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 0.8rem;
+      padding-left: 0.75rem;
+    }
+
+    .toc-list { list-style: none; }
+
+    .toc-item {
+      position: relative;
+      margin-bottom: 1px;
+    }
+
+    .toc-link {
+      display: block;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: all 0.2s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .toc-link:hover {
+      color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .toc-link.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-light);
+      font-weight: 600;
+    }
+
+    .toc-link.toc-h3 {
+      padding-left: 1.5rem;
+      font-size: 0.73rem;
+    }
+
+    /* ── Content Area ── */
+    .container {
+      flex: 1;
+      max-width: 760px;
+      min-width: 0;
+      padding: 3rem 1.5rem 6rem 2rem;
+    }
+
+    /* ── Typography (unchanged from original) ── */
     h1 {
       font-size: 2rem;
       font-weight: 700;
@@ -66,7 +156,6 @@
       font-style: italic;
     }
 
-    /* Section headings */
     h2 {
       font-size: 1.45rem;
       font-weight: 700;
@@ -86,43 +175,16 @@
       color: var(--text);
     }
 
-    /* Paragraphs */
-    p {
-      margin-bottom: 1.15rem;
-    }
+    p { margin-bottom: 1.15rem; }
+    strong { font-weight: 700; color: var(--text); }
 
-    /* Strong emphasis in running text */
-    strong {
-      font-weight: 700;
-      color: var(--text);
-    }
+    ul, ol { margin-bottom: 1.15rem; padding-left: 1.6rem; }
+    li { margin-bottom: 0.4rem; }
+    li > strong:first-child { color: var(--accent); }
 
-    /* Lists */
-    ul, ol {
-      margin-bottom: 1.15rem;
-      padding-left: 1.6rem;
-    }
+    a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+    a:hover { color: var(--accent); }
 
-    li {
-      margin-bottom: 0.4rem;
-    }
-
-    li > strong:first-child {
-      color: var(--accent);
-    }
-
-    /* Links */
-    a {
-      color: var(--link);
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    a:hover {
-      color: var(--accent);
-    }
-
-    /* Blockquotes — used for thesis invariants */
     blockquote {
       margin: 1.8rem 0;
       padding: 1.2rem 1.5rem;
@@ -132,16 +194,9 @@
       font-style: italic;
       color: var(--text-secondary);
     }
+    blockquote p { margin-bottom: 0.5rem; }
+    blockquote p:last-child { margin-bottom: 0; }
 
-    blockquote p {
-      margin-bottom: 0.5rem;
-    }
-
-    blockquote p:last-child {
-      margin-bottom: 0;
-    }
-
-    /* Tables — architecture mapping */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -160,41 +215,20 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-
-    thead th:first-child {
-      border-radius: 6px 0 0 0;
-    }
-
-    thead th:last-child {
-      border-radius: 0 6px 0 0;
-    }
+    thead th:first-child { border-radius: 6px 0 0 0; }
+    thead th:last-child { border-radius: 0 6px 0 0; }
 
     tbody td {
       padding: 0.65rem 1rem;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
+    tbody tr:nth-child(even) { background: var(--table-stripe); }
+    tbody tr:last-child td:first-child { border-radius: 0 0 0 6px; }
+    tbody tr:last-child td:last-child { border-radius: 0 0 6px 0; }
 
-    tbody tr:nth-child(even) {
-      background: var(--table-stripe);
-    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
 
-    tbody tr:last-child td:first-child {
-      border-radius: 0 0 0 6px;
-    }
-
-    tbody tr:last-child td:last-child {
-      border-radius: 0 0 6px 0;
-    }
-
-    /* Horizontal rules */
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 3rem 0;
-    }
-
-    /* Code (inline, for module names) */
     code {
       font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
       font-size: 0.88em;
@@ -203,32 +237,8 @@
       border-radius: 3px;
     }
 
-    /* References section — tighter spacing */
-    h2:last-of-type ~ ol {
-      font-size: 0.92rem;
-      line-height: 1.55;
-    }
+    h2:last-of-type ~ ol { font-size: 0.92rem; line-height: 1.55; }
 
-    /* Print styles */
-    @media print {
-      body { background: white; font-size: 11pt; }
-      .container { max-width: 100%; padding: 0; }
-      h2 { break-after: avoid; }
-      table { break-inside: avoid; }
-      blockquote { break-inside: avoid; }
-    }
-
-    /* Mobile responsive */
-    @media (max-width: 600px) {
-      html { font-size: 15px; }
-      .container { padding: 1.5rem 1rem 4rem; }
-      h1 { font-size: 1.6rem; }
-      h2 { font-size: 1.25rem; }
-      table { font-size: 0.82rem; }
-      thead th, tbody td { padding: 0.5rem 0.6rem; }
-    }
-
-    /* Subtle header decoration */
     .container > h1:first-child::before {
       content: '';
       display: block;
@@ -238,11 +248,739 @@
       margin-bottom: 1.5rem;
       border-radius: 2px;
     }
+
+    /* ── Diagrams ── */
+    .diagram-container {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .diagram-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .diagram-container svg {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* SVG animation styles */
+    .node-box {
+      fill: var(--diagram-node);
+      stroke: var(--border);
+      stroke-width: 1.5;
+      transition: all 0.5s ease;
+    }
+    .node-box.active {
+      fill: var(--accent-light);
+      stroke: var(--accent);
+      stroke-width: 2;
+      filter: drop-shadow(0 0 6px var(--diagram-glow));
+    }
+
+    .node-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      fill: var(--text);
+      text-anchor: middle;
+      dominant-baseline: central;
+      transition: fill 0.3s ease;
+    }
+    .node-label.active { fill: var(--accent); font-weight: 600; }
+
+    .node-sublabel {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 8.5px;
+      fill: var(--text-secondary);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .edge-line {
+      stroke: var(--border);
+      stroke-width: 1.5;
+      fill: none;
+      transition: stroke 0.5s ease;
+    }
+    .edge-line.active { stroke: var(--accent); stroke-width: 2; }
+
+    .edge-arrow {
+      fill: var(--border);
+      transition: fill 0.5s ease;
+    }
+    .edge-arrow.active { fill: var(--accent); }
+
+    .packet-dot {
+      r: 4;
+      fill: var(--accent);
+      opacity: 0;
+    }
+    .packet-dot.animating { opacity: 1; }
+
+    /* Gate-specific */
+    .gate-bar {
+      fill: var(--diagram-node);
+      stroke: var(--border);
+      stroke-width: 1.5;
+      rx: 4;
+      transition: all 0.5s ease;
+    }
+    .gate-bar.pass {
+      fill: #e8f5e8;
+      stroke: var(--diagram-green);
+      filter: drop-shadow(0 0 4px rgba(58, 122, 58, 0.2));
+    }
+    .gate-bar.escalate {
+      fill: #fff5e0;
+      stroke: var(--diagram-amber);
+      filter: drop-shadow(0 0 4px rgba(197, 145, 43, 0.2));
+    }
+
+    .gate-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      fill: var(--text);
+      dominant-baseline: central;
+      transition: all 0.3s ease;
+    }
+    .gate-label.active { fill: var(--accent); font-weight: 600; }
+
+    .gate-icon {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      text-anchor: middle;
+      dominant-baseline: central;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .gate-icon.visible { opacity: 1; }
+
+    /* Topology-specific */
+    .tier-box {
+      fill: var(--surface);
+      stroke: var(--border);
+      stroke-width: 1.5;
+      rx: 8;
+      transition: all 0.5s ease;
+    }
+    .tier-box.active {
+      stroke: var(--accent);
+      stroke-width: 2;
+      filter: drop-shadow(0 0 8px var(--diagram-glow));
+    }
+
+    .tier-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      fill: var(--text);
+      text-anchor: middle;
+    }
+
+    .tier-sublabel {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 9px;
+      fill: var(--text-secondary);
+      text-anchor: middle;
+    }
+
+    .flow-line {
+      stroke: var(--border);
+      stroke-width: 1.5;
+      stroke-dasharray: 6 4;
+      fill: none;
+    }
+    .flow-line.active {
+      stroke: var(--accent);
+      stroke-dasharray: none;
+    }
+
+    @keyframes flowRight {
+      0% { offset-distance: 0%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+    @keyframes flowLeft {
+      0% { offset-distance: 100%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { offset-distance: 0%; opacity: 0; }
+    }
+
+    /* FSM specific */
+    .fsm-node {
+      fill: var(--diagram-node);
+      stroke: var(--border);
+      stroke-width: 1.5;
+      transition: all 0.5s ease;
+    }
+    .fsm-node.active {
+      fill: var(--accent-light);
+      stroke: var(--accent);
+      stroke-width: 2.5;
+      filter: drop-shadow(0 0 8px var(--diagram-glow));
+    }
+    .fsm-node.terminal {
+      stroke-width: 2;
+    }
+
+    .fsm-label {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 9px;
+      fill: var(--text);
+      text-anchor: middle;
+      dominant-baseline: central;
+      transition: all 0.3s ease;
+    }
+    .fsm-label.active { fill: var(--accent); font-weight: 700; }
+
+    .fsm-edge {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 1.2;
+      marker-end: url(#fsm-arrow);
+      transition: stroke 0.5s ease;
+    }
+    .fsm-edge.active { stroke: var(--accent); stroke-width: 1.8; }
+
+    .fsm-edge-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 7.5px;
+      fill: var(--text-secondary);
+    }
+
+    /* ── Mobile TOC ── */
+    .toc-mobile-toggle {
+      display: none;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+    .toc-mobile-toggle:hover { transform: scale(1.08); }
+
+    .toc-mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 998;
+    }
+    .toc-mobile-overlay.open { display: block; }
+
+    /* ── Print ── */
+    @media print {
+      .toc-sidebar, #progress-bar, .toc-mobile-toggle { display: none !important; }
+      .page-wrapper { display: block; }
+      body { background: white; font-size: 11pt; }
+      .container { max-width: 100%; padding: 0; }
+      h2 { break-after: avoid; }
+      table, blockquote, .diagram-container { break-inside: avoid; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .toc-sidebar {
+        display: none;
+        position: fixed;
+        bottom: 5rem;
+        right: 1.5rem;
+        width: 260px;
+        max-height: 60vh;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        z-index: 999;
+      }
+      .toc-sidebar.open { display: block; }
+      .toc-mobile-toggle { display: flex; align-items: center; justify-content: center; }
+      .page-wrapper { display: block; }
+      .container { padding: 2rem 1.5rem 5rem; }
+    }
+
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .container { padding: 1.5rem 1rem 4rem; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.25rem; }
+      table { font-size: 0.82rem; }
+      thead th, tbody td { padding: 0.5rem 0.6rem; }
+      .diagram-container { padding: 1rem 0.5rem; }
+    }
   </style>
 </head>
 <body>
-  <article class="container">
-    {{CONTENT}}
-  </article>
+  <div id="progress-bar"></div>
+
+  <div class="page-wrapper">
+    <nav class="toc-sidebar" id="toc-sidebar">
+      <div class="toc-title">Contents</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </nav>
+
+    <article class="container" id="content">
+      {{CONTENT}}
+    </article>
+  </div>
+
+  <button class="toc-mobile-toggle" id="toc-toggle" aria-label="Table of contents">&#9776;</button>
+  <div class="toc-mobile-overlay" id="toc-overlay"></div>
+
+  <!-- ════════ DIAGRAM: Event Pipeline ════════ -->
+  <template id="tmpl-event-pipeline">
+    <div class="diagram-container" id="diagram-pipeline">
+      <div class="diagram-label">Event Pipeline &mdash; End-to-End Lifecycle</div>
+      <svg viewBox="0 0 720 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="pipe-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L8,3 L0,6" class="edge-arrow" id="pipe-arrow-path"/>
+          </marker>
+        </defs>
+        <!-- 8 steps -->
+        <g id="pipe-step-0"><rect x="2" y="35" width="76" height="50" rx="6" class="node-box"/><text x="40" y="55" class="node-label">Capture</text><text x="40" y="70" class="node-sublabel">MonkDialer</text></g>
+        <line x1="80" y1="60" x2="92" y2="60" class="edge-line" data-pipe-edge="0"/>
+        <g id="pipe-step-1"><rect x="94" y="35" width="76" height="50" rx="6" class="node-box"/><text x="132" y="55" class="node-label">Encrypt</text><text x="132" y="70" class="node-sublabel">AES-256-GCM</text></g>
+        <line x1="172" y1="60" x2="184" y2="60" class="edge-line" data-pipe-edge="1"/>
+        <g id="pipe-step-2"><rect x="186" y="35" width="76" height="50" rx="6" class="node-box"/><text x="224" y="55" class="node-label">Finalize</text><text x="224" y="70" class="node-sublabel">Create Event</text></g>
+        <line x1="264" y1="60" x2="276" y2="60" class="edge-line" data-pipe-edge="2"/>
+        <g id="pipe-step-3"><rect x="278" y="35" width="76" height="50" rx="6" class="node-box"/><text x="316" y="55" class="node-label">Upload</text><text x="316" y="70" class="node-sublabel">Sync to VPS</text></g>
+        <line x1="356" y1="60" x2="368" y2="60" class="edge-line" data-pipe-edge="3"/>
+        <g id="pipe-step-4"><rect x="370" y="35" width="76" height="50" rx="6" class="node-box"/><text x="408" y="55" class="node-label">Process</text><text x="408" y="70" class="node-sublabel">Transcribe/AI</text></g>
+        <line x1="448" y1="60" x2="460" y2="60" class="edge-line" data-pipe-edge="4"/>
+        <g id="pipe-step-5"><rect x="462" y="35" width="76" height="50" rx="6" class="node-box"/><text x="500" y="55" class="node-label">Policy Gate</text><text x="500" y="70" class="node-sublabel">5 Gates</text></g>
+        <line x1="540" y1="60" x2="552" y2="60" class="edge-line" data-pipe-edge="5"/>
+        <g id="pipe-step-6"><rect x="554" y="35" width="76" height="50" rx="6" class="node-box"/><text x="592" y="55" class="node-label">Commit</text><text x="592" y="70" class="node-sublabel">DB + Log</text></g>
+        <line x1="632" y1="60" x2="644" y2="60" class="edge-line" data-pipe-edge="6"/>
+        <g id="pipe-step-7"><rect x="642" y="35" width="76" height="50" rx="6" class="node-box"/><text x="680" y="55" class="node-label">Display</text><text x="680" y="70" class="node-sublabel">Today Screen</text></g>
+        <!-- Animated packet -->
+        <circle class="packet-dot" id="pipe-packet" cx="0" cy="60" r="4"/>
+      </svg>
+    </div>
+  </template>
+
+  <!-- ════════ DIAGRAM: Policy Gate ════════ -->
+  <template id="tmpl-policy-gate">
+    <div class="diagram-container" id="diagram-gate">
+      <div class="diagram-label">Policy Gate &mdash; Deterministic Trust Boundary</div>
+      <svg viewBox="0 0 480 310" xmlns="http://www.w3.org/2000/svg">
+        <!-- Input -->
+        <rect x="170" y="4" width="140" height="30" rx="15" fill="var(--accent)" opacity="0.15" stroke="var(--accent)" stroke-width="1"/>
+        <text x="240" y="23" class="node-label" style="font-size:10px">AI Patch (from VPS)</text>
+        <line x1="240" y1="36" x2="240" y2="48" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Gate 1 -->
+        <rect x="40" y="50" width="400" height="38" class="gate-bar" id="gate-1-bar"/>
+        <text x="60" y="73" class="gate-label" id="gate-1-label">1 &middot; Provenance Check</text>
+        <text x="370" y="73" class="gate-label" style="font-size:9px;fill:var(--text-secondary)">cite or reject</text>
+        <text x="430" y="73" class="gate-icon" id="gate-1-icon"></text>
+        <line x1="240" y1="90" x2="240" y2="100" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Gate 2 -->
+        <rect x="40" y="102" width="400" height="38" class="gate-bar" id="gate-2-bar"/>
+        <text x="60" y="125" class="gate-label" id="gate-2-label">2 &middot; Privacy Tier</text>
+        <text x="370" y="125" class="gate-label" style="font-size:9px;fill:var(--text-secondary)">INTIMATE &rarr; approve</text>
+        <text x="430" y="125" class="gate-icon" id="gate-2-icon"></text>
+        <line x1="240" y1="142" x2="240" y2="152" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Gate 3 -->
+        <rect x="40" y="154" width="400" height="38" class="gate-bar" id="gate-3-bar"/>
+        <text x="60" y="177" class="gate-label" id="gate-3-label">3 &middot; Risk Classifier</text>
+        <text x="370" y="177" class="gate-label" style="font-size:9px;fill:var(--text-secondary)">PII / health / legal</text>
+        <text x="430" y="177" class="gate-icon" id="gate-3-icon"></text>
+        <line x1="240" y1="194" x2="240" y2="204" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Gate 4 -->
+        <rect x="40" y="206" width="400" height="38" class="gate-bar" id="gate-4-bar"/>
+        <text x="60" y="229" class="gate-label" id="gate-4-label">4 &middot; Redaction</text>
+        <text x="370" y="229" class="gate-label" style="font-size:9px;fill:var(--text-secondary)">strip PII from text</text>
+        <text x="430" y="229" class="gate-icon" id="gate-4-icon"></text>
+        <line x1="240" y1="246" x2="240" y2="256" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Gate 5 -->
+        <rect x="40" y="258" width="400" height="38" class="gate-bar" id="gate-5-bar"/>
+        <text x="60" y="281" class="gate-label" id="gate-5-label">5 &middot; Confidence Floor</text>
+        <text x="370" y="281" class="gate-label" style="font-size:9px;fill:var(--text-secondary)">&lt; 0.6 &rarr; approve</text>
+        <text x="430" y="281" class="gate-icon" id="gate-5-icon"></text>
+      </svg>
+    </div>
+  </template>
+
+  <!-- ════════ DIAGRAM: Split-Brain Topology ════════ -->
+  <template id="tmpl-topology">
+    <div class="diagram-container" id="diagram-topology">
+      <div class="diagram-label">Split-Brain Architecture &mdash; Three-Tier Topology</div>
+      <svg viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Phone tier -->
+        <rect x="20" y="20" width="160" height="160" class="tier-box" id="tier-phone"/>
+        <text x="100" y="50" class="tier-label">Phone</text>
+        <text x="100" y="70" class="tier-sublabel">Working Set</text>
+        <text x="100" y="95" class="tier-sublabel">Capture + Encrypt</text>
+        <text x="100" y="110" class="tier-sublabel">Policy Gate</text>
+        <text x="100" y="125" class="tier-sublabel">5 Screens</text>
+        <text x="100" y="140" class="tier-sublabel">Room DB</text>
+        <text x="100" y="160" class="tier-sublabel" style="font-style:italic;font-size:8px">Offline-capable</text>
+        <!-- Connection lines -->
+        <line x1="182" y1="80" x2="238" y2="80" class="flow-line" id="flow-out"/>
+        <line x1="238" y1="120" x2="182" y2="120" class="flow-line" id="flow-in"/>
+        <!-- Flow labels -->
+        <text x="210" y="74" class="tier-sublabel" style="font-size:8px">encrypted blob &rarr;</text>
+        <text x="210" y="135" class="tier-sublabel" style="font-size:8px">&larr; patch (gated)</text>
+        <!-- Network -->
+        <rect x="240" y="50" width="140" height="100" class="tier-box" id="tier-network" style="stroke-dasharray:6 3"/>
+        <text x="310" y="85" class="tier-label" style="font-size:12px">Network</text>
+        <text x="310" y="105" class="tier-sublabel">AES-256-GCM</text>
+        <text x="310" y="120" class="tier-sublabel">TLS 1.3</text>
+        <!-- Connection lines -->
+        <line x1="382" y1="80" x2="438" y2="80" class="flow-line" id="flow-out2"/>
+        <line x1="438" y1="120" x2="382" y2="120" class="flow-line" id="flow-in2"/>
+        <!-- VPS tier -->
+        <rect x="440" y="20" width="160" height="160" class="tier-box" id="tier-vps"/>
+        <text x="520" y="50" class="tier-label">VPS</text>
+        <text x="520" y="70" class="tier-sublabel">Durable Memory</text>
+        <text x="520" y="95" class="tier-sublabel">Transcription</text>
+        <text x="520" y="110" class="tier-sublabel">Summarization</text>
+        <text x="520" y="125" class="tier-sublabel">Action Extraction</text>
+        <text x="520" y="140" class="tier-sublabel">Object Storage</text>
+        <text x="520" y="160" class="tier-sublabel" style="font-style:italic;font-size:8px">User-controlled</text>
+        <!-- Animated packets -->
+        <circle class="packet-dot" id="topo-packet-out" r="5"/>
+        <circle class="packet-dot" id="topo-packet-in" r="5" style="fill:var(--diagram-blue)"/>
+      </svg>
+    </div>
+  </template>
+
+  <!-- ════════ DIAGRAM: Event FSM ════════ -->
+  <template id="tmpl-fsm">
+    <div class="diagram-container" id="diagram-fsm">
+      <div class="diagram-label">Event Status &mdash; Finite State Machine (6 States, 8 Transitions)</div>
+      <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="fsm-arrow" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5" fill="var(--text-secondary)"/>
+          </marker>
+          <marker id="fsm-arrow-active" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5" fill="var(--accent)"/>
+          </marker>
+        </defs>
+        <!-- State: PENDING_RECORDING -->
+        <g id="fsm-s0">
+          <rect x="20" y="100" width="130" height="44" rx="22" class="fsm-node"/>
+          <text x="85" y="118" class="fsm-label">PENDING</text>
+          <text x="85" y="132" class="fsm-label">RECORDING</text>
+        </g>
+        <!-- Edge: PR -> PP -->
+        <line x1="152" y1="122" x2="178" y2="122" class="fsm-edge" id="fsm-e0"/>
+        <!-- State: PENDING_PROCESSING -->
+        <g id="fsm-s1">
+          <rect x="180" y="100" width="130" height="44" rx="22" class="fsm-node"/>
+          <text x="245" y="118" class="fsm-label">PENDING</text>
+          <text x="245" y="132" class="fsm-label">PROCESSING</text>
+        </g>
+        <!-- Edge: PP -> P -->
+        <line x1="312" y1="122" x2="338" y2="122" class="fsm-edge" id="fsm-e1"/>
+        <!-- State: PROCESSING -->
+        <g id="fsm-s2">
+          <rect x="340" y="100" width="110" height="44" rx="22" class="fsm-node"/>
+          <text x="395" y="126" class="fsm-label">PROCESSING</text>
+        </g>
+        <!-- Edge: P -> READY -->
+        <path d="M452,110 Q480,60 510,60 L530,60" class="fsm-edge" id="fsm-e2" fill="none"/>
+        <!-- Edge: P -> REQUIRES_APPROVAL -->
+        <line x1="452" y1="122" x2="530" y2="122" class="fsm-edge" id="fsm-e3"/>
+        <!-- Edge: P -> FAILED -->
+        <path d="M452,134 Q480,184 510,184 L530,184" class="fsm-edge" id="fsm-e4" fill="none"/>
+        <!-- State: READY (terminal) -->
+        <g id="fsm-s3">
+          <rect x="532" y="38" width="90" height="44" rx="22" class="fsm-node terminal" style="stroke:var(--diagram-green)"/>
+          <text x="577" y="64" class="fsm-label" style="fill:var(--diagram-green)">READY</text>
+        </g>
+        <!-- State: REQUIRES_APPROVAL -->
+        <g id="fsm-s4">
+          <rect x="532" y="100" width="90" height="44" rx="22" class="fsm-node" style="stroke:var(--diagram-amber)"/>
+          <text x="577" y="118" class="fsm-label" style="fill:var(--diagram-amber);font-size:7.5px">REQUIRES</text>
+          <text x="577" y="132" class="fsm-label" style="fill:var(--diagram-amber);font-size:7.5px">APPROVAL</text>
+        </g>
+        <!-- Edge: RA -> READY -->
+        <path d="M577,100 Q577,82 577,84" class="fsm-edge" id="fsm-e5" fill="none"/>
+        <!-- Edge: RA -> FAILED -->
+        <path d="M577,146 Q577,164 577,162" class="fsm-edge" id="fsm-e6" fill="none"/>
+        <!-- State: FAILED -->
+        <g id="fsm-s5">
+          <rect x="532" y="164" width="90" height="44" rx="22" class="fsm-node" style="stroke:#a04040"/>
+          <text x="577" y="190" class="fsm-label" style="fill:#a04040">FAILED</text>
+        </g>
+        <!-- Edge: FAILED -> PENDING_PROCESSING (retry) -->
+        <path d="M532,200 Q300,250 245,146" class="fsm-edge" id="fsm-e7" fill="none" style="stroke-dasharray:4 3"/>
+        <text x="370" y="244" class="fsm-edge-label">retry</text>
+      </svg>
+    </div>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    // ── TOC Generation ──
+    const content = document.getElementById('content');
+    const tocList = document.getElementById('toc-list');
+    const headings = content.querySelectorAll('h2, h3');
+    const tocItems = [];
+
+    headings.forEach((h, i) => {
+      const id = 'section-' + i;
+      h.id = id;
+      const li = document.createElement('li');
+      li.className = 'toc-item';
+      const a = document.createElement('a');
+      a.href = '#' + id;
+      a.className = 'toc-link' + (h.tagName === 'H3' ? ' toc-h3' : '');
+      a.textContent = h.textContent;
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Close mobile TOC
+        document.getElementById('toc-sidebar').classList.remove('open');
+        document.getElementById('toc-overlay').classList.remove('open');
+      });
+      li.appendChild(a);
+      tocList.appendChild(li);
+      tocItems.push({ el: h, link: a });
+    });
+
+    // ── Mobile TOC Toggle ──
+    const tocToggle = document.getElementById('toc-toggle');
+    const tocSidebar = document.getElementById('toc-sidebar');
+    const tocOverlay = document.getElementById('toc-overlay');
+
+    tocToggle.addEventListener('click', function() {
+      tocSidebar.classList.toggle('open');
+      tocOverlay.classList.toggle('open');
+    });
+    tocOverlay.addEventListener('click', function() {
+      tocSidebar.classList.remove('open');
+      tocOverlay.classList.remove('open');
+    });
+
+    // ── Insert Diagrams ──
+    function insertDiagramAfter(headingText, templateId) {
+      const tmpl = document.getElementById(templateId);
+      if (!tmpl) return;
+      for (const h of headings) {
+        if (h.textContent.includes(headingText)) {
+          // Insert after the first paragraph following this heading
+          let target = h.nextElementSibling;
+          if (target) {
+            target.insertAdjacentElement('afterend', tmpl.content.firstElementChild.cloneNode(true));
+          }
+          return;
+        }
+      }
+    }
+
+    insertDiagramAfter('The Event Pipeline', 'tmpl-event-pipeline');
+    insertDiagramAfter('The Policy Gate', 'tmpl-policy-gate');
+    insertDiagramAfter('System Topology', 'tmpl-topology');
+    insertDiagramAfter('The Event Pipeline', 'tmpl-fsm'); // FSM goes after pipeline section heading too
+
+    // Place FSM after the status transition paragraph
+    const fsmDiagram = document.getElementById('diagram-fsm');
+    if (fsmDiagram) {
+      // Move it: find the paragraph mentioning "finite state machine"
+      const paras = content.querySelectorAll('p');
+      for (const p of paras) {
+        if (p.textContent.includes('finite state machine')) {
+          p.insertAdjacentElement('afterend', fsmDiagram);
+          break;
+        }
+      }
+    }
+
+    // ── Progress Bar ──
+    const progressBar = document.getElementById('progress-bar');
+
+    // ── Scroll Handler ──
+    let ticking = false;
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function() {
+        updateProgress();
+        updateTOC();
+        animateDiagrams();
+        ticking = false;
+      });
+    }
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    }
+
+    function updateTOC() {
+      let activeIndex = 0;
+      const scrollY = window.scrollY + 100;
+      for (let i = tocItems.length - 1; i >= 0; i--) {
+        if (tocItems[i].el.offsetTop <= scrollY) {
+          activeIndex = i;
+          break;
+        }
+      }
+      tocItems.forEach(function(item, i) {
+        item.link.classList.toggle('active', i === activeIndex);
+      });
+      // Scroll active TOC item into view within sidebar
+      const activeLink = tocItems[activeIndex] && tocItems[activeIndex].link;
+      if (activeLink && tocSidebar.scrollHeight > tocSidebar.clientHeight) {
+        const linkTop = activeLink.offsetTop - tocSidebar.offsetTop;
+        const sidebarScroll = tocSidebar.scrollTop;
+        const sidebarHeight = tocSidebar.clientHeight;
+        if (linkTop < sidebarScroll || linkTop > sidebarScroll + sidebarHeight - 40) {
+          tocSidebar.scrollTop = linkTop - sidebarHeight / 3;
+        }
+      }
+    }
+
+    // ── Diagram Animations ──
+    const animated = {};
+
+    function isInView(el) {
+      if (!el) return false;
+      const rect = el.getBoundingClientRect();
+      return rect.top < window.innerHeight * 0.85 && rect.bottom > 0;
+    }
+
+    function animateDiagrams() {
+      animatePipeline();
+      animateGate();
+      animateTopology();
+      animateFSM();
+    }
+
+    // Pipeline: sequential step activation
+    function animatePipeline() {
+      const container = document.getElementById('diagram-pipeline');
+      if (!container || animated.pipeline) return;
+      if (!isInView(container)) return;
+      animated.pipeline = true;
+
+      for (let i = 0; i < 8; i++) {
+        setTimeout(function() {
+          const step = document.getElementById('pipe-step-' + i);
+          if (step) {
+            step.querySelector('.node-box').classList.add('active');
+            step.querySelector('.node-label').classList.add('active');
+          }
+          const edge = document.querySelector('[data-pipe-edge="' + i + '"]');
+          if (edge) edge.classList.add('active');
+        }, i * 300);
+      }
+    }
+
+    // Policy Gate: sequential gate pass
+    function animateGate() {
+      const container = document.getElementById('diagram-gate');
+      if (!container || animated.gate) return;
+      if (!isInView(container)) return;
+      animated.gate = true;
+
+      var gateResults = ['pass', 'pass', 'escalate', 'pass', 'pass'];
+      var gateIcons = ['\u2713', '\u2713', '\u26A0', '\u2713', '\u2713'];
+
+      for (let i = 0; i < 5; i++) {
+        setTimeout(function() {
+          var bar = document.getElementById('gate-' + (i+1) + '-bar');
+          var label = document.getElementById('gate-' + (i+1) + '-label');
+          var icon = document.getElementById('gate-' + (i+1) + '-icon');
+          if (bar) bar.classList.add(gateResults[i]);
+          if (label) label.classList.add('active');
+          if (icon) { icon.textContent = gateIcons[i]; icon.classList.add('visible'); }
+        }, i * 400 + 200);
+      }
+    }
+
+    // Topology: tier activation + packet animation
+    function animateTopology() {
+      var container = document.getElementById('diagram-topology');
+      if (!container || animated.topology) return;
+      if (!isInView(container)) return;
+      animated.topology = true;
+
+      setTimeout(function() {
+        document.getElementById('tier-phone').classList.add('active');
+      }, 200);
+      setTimeout(function() {
+        document.getElementById('flow-out').classList.add('active');
+        document.getElementById('flow-out2').classList.add('active');
+        document.getElementById('tier-network').classList.add('active');
+      }, 700);
+      setTimeout(function() {
+        document.getElementById('tier-vps').classList.add('active');
+      }, 1200);
+      setTimeout(function() {
+        document.getElementById('flow-in').classList.add('active');
+        document.getElementById('flow-in2').classList.add('active');
+      }, 1700);
+    }
+
+    // FSM: sequential state activation
+    function animateFSM() {
+      var container = document.getElementById('diagram-fsm');
+      if (!container || animated.fsm) return;
+      if (!isInView(container)) return;
+      animated.fsm = true;
+
+      var sequence = [
+        { states: ['fsm-s0'], edges: [] },
+        { states: ['fsm-s1'], edges: ['fsm-e0'] },
+        { states: ['fsm-s2'], edges: ['fsm-e1'] },
+        { states: ['fsm-s3', 'fsm-s4', 'fsm-s5'], edges: ['fsm-e2', 'fsm-e3', 'fsm-e4'] },
+      ];
+
+      sequence.forEach(function(step, i) {
+        setTimeout(function() {
+          step.states.forEach(function(sId) {
+            var g = document.getElementById(sId);
+            if (g) {
+              var rect = g.querySelector('rect');
+              if (rect) rect.classList.add('active');
+              g.querySelectorAll('text').forEach(function(t) { t.classList.add('active'); });
+            }
+          });
+          step.edges.forEach(function(eId) {
+            var e = document.getElementById(eId);
+            if (e) { e.classList.add('active'); e.style.markerEnd = 'url(#fsm-arrow-active)'; }
+          });
+        }, i * 500 + 200);
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Initial call
+    onScroll();
+  })();
+  </script>
 </body>
 </html>
